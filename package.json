@@ -3,14 +3,11 @@
   "version": "1.0.0",
   "description": "Interactive AFD Map",
   "scripts": {
-    "start": "npm run parcel-setup && parcel",
-    "parcel-setup": "cp -R ./node_modules/cesium/Build/Cesium/Assets ./dist && cp -R ./node_modules/cesium/Build/Cesium/ThirdParty ./dist && cp -R ./node_modules/cesium/Build/Cesium/Widgets ./dist && cp -R ./node_modules/cesium/Build/Cesium/Workers ./dist",
-    "build": "npm run parcel-setup && parcel build"
+    "start": "npm run setup && parcel",
+    "setup": "cp -R ./node_modules/cesium/Build/Cesium/Assets ./dist && cp -R ./node_modules/cesium/Build/Cesium/ThirdParty ./dist && cp -R ./node_modules/cesium/Build/Cesium/Widgets ./dist && cp -R ./node_modules/cesium/Build/Cesium/Workers ./dist",
+    "build": "npm run setup && parcel build"
   },
   "source": "src/index.html",
-  "staticFiles": {
-    "staticPath": "node_modules/cesium/Build/Cesium/[Assets/**][ThirdParty/**][Widgets/**][Workers/**]"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/carteralbrecht/afd-map.git"
