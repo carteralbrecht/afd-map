@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/carteralbrecht/afd-map/issues"
   },
-  "homepage": "https://github.com/carteralbrecht/afd-map#readme"
+  "homepage": "https://github.com/carteralbrecht/afd-map#readme",
+  "dependencies": {
+    "cesium": "^1.96.0"
+  }
 }
