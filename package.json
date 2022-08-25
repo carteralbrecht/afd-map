@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "description": "Interactive AFD Map",
   "scripts": {
-    "start": "npm run setup && parcel",
-    "setup": "cp -R ./node_modules/cesium/Build/Cesium/Assets ./dist && cp -R ./node_modules/cesium/Build/Cesium/ThirdParty ./dist && cp -R ./node_modules/cesium/Build/Cesium/Widgets ./dist && cp -R ./node_modules/cesium/Build/Cesium/Workers ./dist",
-    "build": "npm run setup && parcel build"
+    "build": "node_modules/.bin/webpack --config webpack.config.js",
+    "start": "node_modules/.bin/webpack-dev-server --config webpack.config.js --open"
   },
-  "source": "src/index.html",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/carteralbrecht/afd-map.git"
@@ -19,20 +18,28 @@
   },
   "homepage": "https://github.com/carteralbrecht/afd-map#readme",
   "dependencies": {
-    "cesium": "^1.96.0"
+    "cesium": "^1.96.0",
+    "dotenv": "^16.0.1"
   },
   "devDependencies": {
     "assert": "^2.0.0",
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.7.1",
     "events": "^3.3.0",
+    "html-webpack-plugin": "^5.5.0",
     "https-browserify": "^1.0.0",
-    "parcel": "^2.7.0",
     "process": "^0.11.10",
     "querystring-es3": "^0.2.1",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
+    "style-loader": "^3.3.1",
     "url": "^0.11.0",
-    "util": "^0.12.4"
+    "url-loader": "^4.1.1",
+    "util": "^0.12.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.10.0"
   }
 }

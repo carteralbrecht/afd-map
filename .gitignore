@@ -122,6 +122,12 @@ dist
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
+# IntelliJ
+.idea/**
+
+# Mac trash
+**/.DS_Store
+
 # yarn v2
 .yarn/cache
 .yarn/unplugged
