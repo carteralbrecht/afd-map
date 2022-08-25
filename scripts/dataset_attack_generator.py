@@ -44,11 +44,11 @@ def generate_timerange_dict():
     times = [x.timestamp() for x in list(rrule(freq=MINUTELY, interval=30, dtstart=start_time, count=chunks))]
     data_dict = {}
     for t in times:
-        data_dict[t] = []
+        data_dict[int(t)] = []
     return data_dict
 
 
-def add_point(data_dict, ts, lat, lon, model_score):
+def calculate_event_time_bucket(ts):
     ts = ts.replace(second=0).replace(microsecond=0)
     if ts.minute < 30:
         if ts.minute < 15:
@@ -60,10 +60,14 @@ def add_point(data_dict, ts, lat, lon, model_score):
             ts = ts.replace(minute=30)
         else:
             ts = ts.replace(minute=0) + timedelta(hours=1)
-    if ts.timestamp() not in data_dict:
-        print(f"SOMETHING IS WRONG, {ts.timestamp()} not in data_dict!")
+    return int(ts.timestamp())
+
+
+def add_point(data_dict, ts_bucket, lat, lon, model_score, event_id):
+    if ts_bucket not in data_dict:
+        print(f"SOMETHING IS WRONG, {ts_bucket} not in data_dict!")
         exit(1)
-    data_dict[ts.timestamp()] += [lat, lon, model_score]
+    data_dict[ts_bucket] += [lat, lon, model_score, event_id]
 
 
 def main():
@@ -72,43 +76,54 @@ def main():
     # randomly
 
     data_dict = generate_timerange_dict()
+    events = []
+
+    def calculate_model_score(row):
+        for attack in location_based_attacks:
+            if abs(attack[0] - t) < timedelta(minutes=attack_length_minutes) \
+                    and haversine((lat, lon), (attack[1], attack[2]), Unit.MILES) < attack_range_miles:
+                print(f"Location Attack Modification: {row}")
+                return random.randint(fraud_score_cutoff, fraud_max_score)
+
+        # Now lets see if we need to flip the score for our country wide attack.
+        if abs(attack_3_time - t) < timedelta(minutes=attack_length_minutes) \
+                and random.random() < attack_percentage:
+            print(f"Global Attack Modification: {row}")
+            return random.randint(fraud_score_cutoff, fraud_max_score)
+
+        # If we're still here, return the not-fraud model score
+        return random.randint(fraud_min_score, fraud_score_cutoff)
 
     with open("data.json", "w") as json_output_file:
-        with open("transaction_data_100K_full.csv", "r") as csv_input_file:
-            reader = csv.DictReader(csv_input_file)
-            for row in reader:
-                if row["EVENT_LABEL"] == "1":
-                    # If the event is already fraud, leave it, we want some "background fraud" on the map to look realistic.
-                    continue
+        with open ("events.json", "w") as event_output_file:
+            with open("transaction_data_100K_full.csv", "r") as csv_input_file:
+                reader = csv.DictReader(csv_input_file)
+                for row in reader:
+                    if row["EVENT_LABEL"] == "1":
+                        # If the event is already fraud, leave it, we want some
+                        # "background fraud" on the map to look realistic.
+                        continue
 
-                t = parser.parse(row["EVENT_TIMESTAMP"])
-                lat = float(row["billing_latitude"])
-                lon = float(row["billing_longitude"])
+                    t = parser.parse(row["EVENT_TIMESTAMP"])
+                    lat = float(row["billing_latitude"])
+                    lon = float(row["billing_longitude"])
 
-                # We don't want to write out the event label to the new file.
-                del(row["EVENT_LABEL"])
+                    # We don't want to write out the event label to the new file.
+                    del(row["EVENT_LABEL"])
 
-                def calculate_model_score(row):
-                    for attack in location_based_attacks:
-                        if abs(attack[0] - t) < timedelta(minutes=attack_length_minutes) \
-                                and haversine((lat, lon), (attack[1], attack[2]), Unit.MILES) < attack_range_miles:
-                            print(f"Location Attack Modification: {row}")
-                            return random.randint(fraud_score_cutoff, fraud_max_score)
+                    event_ts_bucket = calculate_event_time_bucket(t)
+                    model_score = calculate_model_score(row)
+                    add_point(data_dict, event_ts_bucket, lat, lon, model_score, row["EVENT_ID"]);
 
-                    # Now lets see if we need to flip the score for our country wide attack.
-                    if abs(attack_3_time - t) < timedelta(minutes=attack_length_minutes) \
-                            and random.random() < attack_percentage:
-                        print(f"Global Attack Modification: {row}")
-                        return random.randint(fraud_score_cutoff, fraud_max_score)
+                    # Add some information that will go in the events.json file
+                    row["MODEL_SCORE"] = model_score
+                    row["EVENT_TS_BUCKET"] = event_ts_bucket
 
-                    # If we're still here, return the not-fraud model score
-                    return random.randint(fraud_min_score, fraud_score_cutoff)
+                    events.append(row)
 
-                model_score = calculate_model_score(row)
-                add_point(data_dict, t, lat, lon, model_score)
-
-        # Write our datafile
-        json_output_file.write(json.dumps(data_dict, indent=4))
+            # Write our datafiles
+            json_output_file.write(json.dumps(data_dict, indent=4))
+            event_output_file.write(json.dumps(events, indent=4))
 
 
 if __name__ == "__main__":

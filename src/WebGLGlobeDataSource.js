@@ -1,5 +1,6 @@
 import * as Cesium from "cesium";
 import data from "./data.json";
+import events from "./events.json";
 
 /**
  * This class is an example of a custom DataSource.  It loads JSON data as
