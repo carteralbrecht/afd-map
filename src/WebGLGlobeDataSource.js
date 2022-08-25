@@ -146,7 +146,6 @@ class WebGLGlobeDataSource {
 
         var cnt = 0;
         for (var key in data) {
-            console.log("Loading data for key " + key)
             var seriesName = key;
             var coordinates = data[key];
 
@@ -202,7 +201,9 @@ class WebGLGlobeDataSource {
                     id : seriesName + ' index ' + i.toString(),
                     show : 0,
                     polyline : polyline,
-                    seriesName : seriesName //Custom property to indicate series name
+                    seriesName : seriesName, //Custom property to indicate series name
+                    latitude,
+                    longitude
                 });
 
                 //Add the entity to the collection.
