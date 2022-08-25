@@ -47,7 +47,7 @@ class WebGLGlobeDataSource {
 
     set seriesToDisplay(value) {
         this._seriesToDisplay = value;
-
+        console.log("Setting series to display to value " + value);
         //Iterate over all entities and set their show property
         //to true only if they are part of the current series.
         var collection = this._entityCollection;
@@ -119,7 +119,7 @@ class WebGLGlobeDataSource {
         this._entityCollection = new Cesium.EntityCollection();
         this._seriesNames = [];
         this._seriesToDisplay = undefined;
-        this._heightScale = 10000000;
+        this._heightScale = 5000;
         this.clock = new Cesium.DataSourceClock()
         this._show = true;
         this._clustering = new Cesium.EntityCluster({
@@ -129,7 +129,6 @@ class WebGLGlobeDataSource {
     }
 
     load() {
-
         //Clear out any data that might already exist.
         this._setLoading(true);
         this._seriesNames.length = 0;
@@ -147,6 +146,7 @@ class WebGLGlobeDataSource {
 
         var cnt = 0;
         for (var key in data) {
+            console.log("Loading data for key " + key)
             var seriesName = key;
             var coordinates = data[key];
 
@@ -170,7 +170,23 @@ class WebGLGlobeDataSource {
                     continue;
                 }
 
-                var color = Cesium.Color.fromHsl((0.6 - (height * 0.5)), 1.0, 0.5);
+                // height will be a model score from 100 to 900, with 100 being least fraud, and 900 being most fraud
+                // This isn't the most elegant code, it's a hackathon, leave me alone
+                let color;
+                if (height < 400) {
+                    color = Cesium.Color.AQUA.withAlpha(.5)
+                } else if (height < 500) {
+                    color = Cesium.Color.BLUE.withAlpha(.5)
+                } else if (height < 600) {
+                    color = Cesium.Color.CHARTREUSE.withAlpha(.5)
+                } else if (height < 700) {
+                    color = Cesium.Color.YELLOW.withAlpha(.5)
+                } else if (height < 750) {
+                    color = Cesium.Color.ORANGE.withAlpha(.5)
+                } else {
+                    color = Cesium.Color.RED.withAlpha(.5)
+                }
+
                 var surfacePosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0);
                 var heightPosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, height * heightScale);
 
@@ -184,7 +200,7 @@ class WebGLGlobeDataSource {
                 //The polyline instance itself needs to be on an entity.
                 var entity = new Cesium.Entity({
                     id : seriesName + ' index ' + i.toString(),
-                    show : cnt === 0,
+                    show : 1,
                     polyline : polyline,
                     seriesName : seriesName //Custom property to indicate series name
                 });
