@@ -55,7 +55,7 @@ class WebGLGlobeDataSource {
         collection.suspendEvents();
         for (var i = 0; i < entities.length; i++) {
             var entity = entities[i];
-            entity.show = value === this._seriesToDisplay._name;
+            entity.show = this._seriesToDisplay === entity.seriesName;
         }
         collection.resumeEvents();
     }
