@@ -200,7 +200,7 @@ class WebGLGlobeDataSource {
                 //The polyline instance itself needs to be on an entity.
                 var entity = new Cesium.Entity({
                     id : seriesName + ' index ' + i.toString(),
-                    show : 1,
+                    show : 0,
                     polyline : polyline,
                     seriesName : seriesName //Custom property to indicate series name
                 });

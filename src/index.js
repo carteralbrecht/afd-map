@@ -14,3 +14,8 @@ const dataSource = new WebGLGlobeDataSource();
 dataSource.load();
 viewer.clock.shouldAnimate = false;
 viewer.dataSources.add(dataSource);
+
+function sliderChangeHandler(){
+    console.log(document.getElementById("timeSlider").value);
+    dataSource.seriesToDisplay(value)
+}
