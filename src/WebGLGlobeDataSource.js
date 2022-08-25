@@ -1,5 +1,6 @@
 import * as Cesium from "cesium";
 import data from "./data.json";
+import events from "./events.json";
 
 /**
  * This class is an example of a custom DataSource.  It loads JSON data as
@@ -146,7 +147,6 @@ class WebGLGlobeDataSource {
 
         var cnt = 0;
         for (var key in data) {
-            console.log("Loading data for key " + key)
             var seriesName = key;
             var coordinates = data[key];
 

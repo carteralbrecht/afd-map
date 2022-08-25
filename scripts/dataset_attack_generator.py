@@ -63,11 +63,11 @@ def calculate_event_time_bucket(ts):
     return int(ts.timestamp())
 
 
-def add_point(data_dict, ts_bucket, lat, lon, model_score):
+def add_point(data_dict, ts_bucket, lat, lon, model_score, event_id):
     if ts_bucket not in data_dict:
         print(f"SOMETHING IS WRONG, {ts_bucket} not in data_dict!")
         exit(1)
-    data_dict[ts_bucket] += [lat, lon, model_score]
+    data_dict[ts_bucket] += [lat, lon, model_score, event_id]
 
 
 def main():
@@ -113,7 +113,7 @@ def main():
 
                     event_ts_bucket = calculate_event_time_bucket(t)
                     model_score = calculate_model_score(row)
-                    add_point(data_dict, event_ts_bucket, lat, lon, model_score)
+                    add_point(data_dict, event_ts_bucket, lat, lon, model_score, row["EVENT_ID"]);
 
                     # Add some information that will go in the events.json file
                     row["MODEL_SCORE"] = model_score
