@@ -1,6 +1,7 @@
-import { Ion, Viewer } from "cesium";
+import {Ion, ScreenSpaceEventHandler, ScreenSpaceEventType, Viewer, Math} from "cesium";
 import "cesium/Widgets/widgets.css";
 import WebGLGlobeDataSource from "./WebGLGlobeDataSource.js";
+import events from "./events.json";
 
 Ion.defaultAccessToken = process.env.CESIUM_TOKEN;
 
@@ -22,10 +23,10 @@ handlerToolTips.setInputAction(function (movement) {
     const entityBeingSelected = getSelectedEntity(movement.endPosition);
     if (entityBeingSelected === null) {
         selectedEntityId = null;
-        hideTooltip();
+        moveRowToTopAndHighlight(entityBeingSelected);
     } else if (entityBeingSelected.id !== selectedEntityId) {
         selectedEntityId = entityBeingSelected.id;
-        showTooltip(movement.endPosition, entityBeingSelected);
+        unhighlightEntity(entityBeingSelected);
     }
 }, ScreenSpaceEventType.MOUSE_MOVE);
 
@@ -38,22 +39,20 @@ function getSelectedEntity(position) {
     return null;
 }
 
-function showTooltip(endPosition, entity) {
-    const tooltipContent = document.getElementById('tooltip-content');
-    tooltipContent.innerHTML = `Selected Event: lat=${entity.latitude}, lon=${entity.longitude}`;
+function unhighlightEntity(entity) {
 }
 
-function hideTooltip() {
-    const tooltipContent = document.getElementById('tooltip-content');
-    tooltipContent.innerHTML = `Selected Event:`;
+function moveRowToTopAndHighlight(entity) {
+    // var rows = document.getElementById("table").rows, parent = rows[index].parentNode;
+    // eventInfoTable
 }
 
 document.querySelector("#timeSlider").addEventListener('change', () => {
     const newValue = document.getElementById("timeSlider").value;
     dataSource.seriesToDisplay = newValue;
-})
+});
 
-setInterval(function() {
+viewer.camera.moveEnd.addEventListener(() => {
     let rect = viewer.camera.computeViewRectangle();
     let west = Math.toDegrees(rect.west).toFixed(4);
     let south = Math.toDegrees(rect.south).toFixed(4);
@@ -92,11 +91,11 @@ setInterval(function() {
             let displayed_event = displayed_events[i];
             // We'll set this row to highlight yellow or red depending on the model score
             if(parseInt(displayed_event["MODEL_SCORE"]) > 750) {
-                innerHTML+='<tr class="table-danger">';
+                innerHTML+= `<tr class="table-danger" id="${displayed_event["ENTITY_ID"]}>`;
             } else if(parseInt(displayed_event["MODEL_SCORE"]) > 650) {
-                innerHTML+='<tr class="table-warning">';
+                innerHTML+= `<tr class="table-warning" id="${displayed_event["ENTITY_ID"]}>`;
             } else {
-                innerHTML+='<tr>';
+                innerHTML+= `<tr id="${displayed_event["ENTITY_ID"]}>`;
             }
 
             for (let j = 0; j < displayed_columns.length; j++) {
@@ -110,4 +109,4 @@ setInterval(function() {
     } else {
         document.getElementById("eventInfoTable").innerHTML = "";
     }
-}, 1000)
+});

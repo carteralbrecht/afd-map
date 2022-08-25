@@ -1,6 +1,5 @@
 import * as Cesium from "cesium";
 import data from "./data.json";
-import events from "./events.json";
 
 /**
  * This class is an example of a custom DataSource.  It loads JSON data as
@@ -160,10 +159,12 @@ class WebGLGlobeDataSource {
 
             //Now loop over each coordinate in the series and create
             // our entities from the data.
-            for (var i = 0; i < coordinates.length; i += 3) {
+            for (var i = 0; i < coordinates.length; i += 4) {
                 var latitude = coordinates[i];
                 var longitude = coordinates[i + 1];
                 var height = coordinates[i + 2];
+                var id = coordinates[i + 3];
+
 
                 //Ignore lines of zero height.
                 if(height === 0) {
@@ -199,7 +200,7 @@ class WebGLGlobeDataSource {
 
                 //The polyline instance itself needs to be on an entity.
                 var entity = new Cesium.Entity({
-                    id : seriesName + ' index ' + i.toString(),
+                    id,
                     show : 0,
                     polyline : polyline,
                     seriesName : seriesName, //Custom property to indicate series name
