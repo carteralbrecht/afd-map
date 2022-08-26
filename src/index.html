@@ -24,10 +24,20 @@
                         <div id="cesiumContainer" style="height: 600px"></div>
                     </div>
                     <div class="row">
-                        <div id="timeSliderContainer" class="w-100">
-                            <input id="timeSlider" class="form-range" type="range"
-                                   min="1619827200" max="1630193400" step="1800" value="1619827200"/>
-                            <!-- TODO: How do I reference functions in index.js from here? -->
+                        <div id="timeSliderContainer" class="w-100 p-3">
+                            <div class="row">
+                                <div class="col-9">
+                                    <input id="timeSlider"class="form-range" type="range"
+                                           min="1619827200" max="1630193400" step="1800" value="1619827200"/>
+                                </div>
+                                <div class="col-1" id="timeColumn"></div>
+                                <div class="col-1">
+                                    <button type="button" class="btn btn-primary" id="playButton">Play</button>
+                                </div>
+                                <div class="col-1">
+                                    <button type="button" class="btn btn-primary" id="pauseButton">Pause</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -39,6 +49,5 @@
                 </div>
             </div>
         </div>
-    </section>
 </body>
 </html>
