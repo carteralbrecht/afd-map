@@ -9,24 +9,36 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous">
 
-<!-- Header Section -->
-<header class="head_sec">
-    <h1>Amazon Fraud Detector Map</h1>
-</header>
 
-<!-- Body section -->
-<main class = "body_sec">
-    <section id="Content">
-        <div id="cesiumContainer"></div>
-        <div id="timeSliderContainer" class="w-100 p-3">
-            <input id="timeSlider"class="form-range" type="range"
-                   min="1619827200" max="1630193400" step="1800" value="1619827200"/> <!-- TODO: How do I reference functions in index.js from here? -->
-        </div>
-        <div id="infoTableContainer" class="w-100 p-3">
-            <table class="table table-sm table-bordered" id="eventInfoTable">
-            </table>
+        <div class="container">
+            <div class="row">
+                <header class="head_sec">
+                    <h1>Amazon Fraud Detector Map</h1>
+                </header>
+            </div>
+            <div class="row">
+                <div id="currentlySelectedContainer" class="col-lg-3">
+                </div>
+                <div class="col-lg-9">
+                    <div class="row">
+                        <div id="cesiumContainer" style="height: 600px"></div>
+                    </div>
+                    <div class="row">
+                        <div id="timeSliderContainer" class="w-100">
+                            <input id="timeSlider" class="form-range" type="range"
+                                   min="1619827200" max="1630193400" step="1800" value="1619827200"/>
+                            <!-- TODO: How do I reference functions in index.js from here? -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="infoTableContainer" style="width: fit-content">
+                    <table class="table table-sm table-bordered" id="eventInfoTable">
+                    </table>
+                </div>
+            </div>
         </div>
     </section>
-</main>
 </body>
 </html>

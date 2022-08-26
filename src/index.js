@@ -16,17 +16,17 @@ dataSource.load();
 viewer.clock.shouldAnimate = false;
 viewer.dataSources.add(dataSource);
 
-const handlerToolTips = new ScreenSpaceEventHandler(viewer.scene.canvas);
-let selectedEntityId = null;
+const hoverEventHandler = new ScreenSpaceEventHandler(viewer.scene.canvas);
+let currentlySelectedId = null;
 
-handlerToolTips.setInputAction(function (movement) {
+hoverEventHandler.setInputAction(function (movement) {
     const entityBeingSelected = getSelectedEntity(movement.endPosition);
     if (entityBeingSelected === null) {
-        selectedEntityId = null;
-        moveRowToTopAndHighlight(entityBeingSelected);
-    } else if (entityBeingSelected.id !== selectedEntityId) {
-        selectedEntityId = entityBeingSelected.id;
-        unhighlightEntity(entityBeingSelected);
+        hideFromSelectedTable(currentlySelectedId);
+        currentlySelectedId = null;
+    } else if (entityBeingSelected.id !== currentlySelectedId) {
+        currentlySelectedId = entityBeingSelected.id;
+        showInSelectedTable(currentlySelectedId);
     }
 }, ScreenSpaceEventType.MOUSE_MOVE);
 
@@ -39,12 +39,23 @@ function getSelectedEntity(position) {
     return null;
 }
 
-function unhighlightEntity(entity) {
+function hideFromSelectedTable(id) {
+    document.getElementById('currentlySelectedContainer').innerHTML = "";
 }
 
-function moveRowToTopAndHighlight(entity) {
-    // var rows = document.getElementById("table").rows, parent = rows[index].parentNode;
-    // eventInfoTable
+function showInSelectedTable(selectedEntityId) {
+    const tableRow = document.getElementById(selectedEntityId);
+    let str = "";
+    str += `<p>Customer Name: ${tableRow.cells[1].innerHTML}</p>`;
+    str += `<p>Customer Job: ${tableRow.cells[2].innerHTML}</p>`;
+    str += `<p>Customer IP Address: ${tableRow.cells[3].innerHTML}</p>`;
+    str += `<p>Customer Email: ${tableRow.cells[4].innerHTML}</p>`;
+    str += `<p>Customer Phone: ${tableRow.cells[5].innerHTML}</p>`;
+    str += `<p>Product Category: ${tableRow.cells[6].innerHTML}</p>`;
+    str += `<p>Order Price: ${tableRow.cells[7].innerHTML}</p>`;
+    str += `<p>Model Score: ${tableRow.cells[8].innerHTML}</p>`;
+
+    document.getElementById('currentlySelectedContainer').innerHTML = str;
 }
 
 document.querySelector("#timeSlider").addEventListener('change', () => {
@@ -84,18 +95,18 @@ viewer.camera.moveEnd.addEventListener(() => {
         for (let i = 0; i < displayed_columns.length; i++) {
             innerHTML+='<th>' + displayed_columns[i] + '</th>';
         }
-        innerHTML += "</tr><tbody>"
+        innerHTML += "</tr><tbody id='table-body'>"
 
         //Generate each row of data
         for (let i = 0; i < displayed_events.length; i++) {
             let displayed_event = displayed_events[i];
             // We'll set this row to highlight yellow or red depending on the model score
             if(parseInt(displayed_event["MODEL_SCORE"]) > 750) {
-                innerHTML+= `<tr class="table-danger" id="${displayed_event["ENTITY_ID"]}>`;
+                innerHTML+= `<tr class="table-danger" id="${displayed_event["EVENT_ID"]}">`;
             } else if(parseInt(displayed_event["MODEL_SCORE"]) > 650) {
-                innerHTML+= `<tr class="table-warning" id="${displayed_event["ENTITY_ID"]}>`;
+                innerHTML+= `<tr class="table-warning" id="${displayed_event["EVENT_ID"]}">`;
             } else {
-                innerHTML+= `<tr id="${displayed_event["ENTITY_ID"]}>`;
+                innerHTML+= `<tr id="${displayed_event["EVENT_ID"]}">`;
             }
 
             for (let j = 0; j < displayed_columns.length; j++) {
