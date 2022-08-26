@@ -196,7 +196,8 @@ class WebGLGlobeDataSource {
                 }
 
                 var surfacePosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0);
-                var heightPosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, height * heightScale);
+                var heightPosition = Cesium.Cartesian3.fromDegrees(longitude, latitude,
+                    (height < 100 ? 100 : height) * heightScale);
 
                 //WebGL Globe only contains lines, so that's the only graphics we create.
                 var polyline = new Cesium.PolylineGraphics();
