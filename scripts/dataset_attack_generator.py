@@ -8,7 +8,6 @@ import random
 
 # We have two location based attacks, one at 07-01 and another at 07-15, both at 12:00 GMT.
 # These attacks occur in Houston and New York.  The values in these tuples are (time, lat, lon)
-
 min_time = parser.parse("2021-05-10 12:00:00+00:00")
 max_time = parser.parse("2021-07-20 12:00:00+00:00")
 
@@ -32,6 +31,9 @@ attack_percentage = .05
 
 # When we generate a fake fraud score, we'll make it 900
 generated_fraud_score = 900
+
+# Set this to true if we want to generate fake model scores
+generate_fake_scores = False
 
 
 def read_model_scores():
@@ -69,11 +71,11 @@ def calculate_event_time_bucket(ts):
     return int(ts.timestamp())
 
 
-def add_point(data_dict, ts_bucket, lat, lon, model_score):
+def add_point(data_dict, ts_bucket, lat, lon, model_score, event_id):
     if ts_bucket not in data_dict:
         print(f"SOMETHING IS WRONG, {ts_bucket} not in data_dict!")
         exit(1)
-    data_dict[ts_bucket] += [lat, lon, model_score]
+    data_dict[ts_bucket] += [lat, lon, model_score, event_id]
 
 
 def main():
@@ -88,17 +90,18 @@ def main():
     print("MAX TIME IS " + str(int(max_time.timestamp())))
 
     def calculate_model_score(row):
-        for attack in location_based_attacks:
-            if abs(attack[0] - t) < timedelta(minutes=attack_length_minutes) \
-                    and haversine((lat, lon), (attack[1], attack[2]), Unit.MILES) < attack_range_miles:
-                print(f"Location Attack Modification: {row}")
-                return generated_fraud_score
+        if generate_fake_scores:
+            for attack in location_based_attacks:
+                if abs(attack[0] - t) < timedelta(minutes=attack_length_minutes) \
+                        and haversine((lat, lon), (attack[1], attack[2]), Unit.MILES) < attack_range_miles:
+                    print(f"Location Attack Modification: {row}")
+                    return generated_fraud_score
 
-        # Now lets see if we need to flip the score for our country wide attack.
-        if abs(attack_3_time - t) < timedelta(minutes=attack_length_minutes) \
-                and random.random() < attack_percentage:
-            print(f"Global Attack Modification: {row}")
-            return generated_fraud_score
+            # Now lets see if we need to flip the score for our country wide attack.
+            if abs(attack_3_time - t) < timedelta(minutes=attack_length_minutes) \
+                    and random.random() < attack_percentage:
+                print(f"Global Attack Modification: {row}")
+                return generated_fraud_score
 
         # If we're still here, return the real model score
         return model_scores_dict[row["EVENT_ID"]]
@@ -130,7 +133,7 @@ def main():
 
                     event_ts_bucket = calculate_event_time_bucket(t)
                     model_score = calculate_model_score(row)
-                    add_point(data_dict, event_ts_bucket, lat, lon, model_score)
+                    add_point(data_dict, event_ts_bucket, lat, lon, model_score, row["EVENT_ID"])
 
                     # Add some information that will go in the events.json file
                     row["MODEL_SCORE"] = model_score
