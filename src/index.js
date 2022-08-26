@@ -19,17 +19,36 @@ viewer.dataSources.add(dataSource);
 const hoverEventHandler = new ScreenSpaceEventHandler(viewer.scene.canvas);
 let currentlySelectedId = null;
 let playInterval = null;
+let retainEventInfo = false;
 
 hoverEventHandler.setInputAction(function (movement) {
     const entityBeingSelected = getSelectedEntity(movement.endPosition);
-    if (entityBeingSelected === null) {
+    currentlySelectedId = entityBeingSelected === null ? null : entityBeingSelected.id;
+    console.log("CURRENTLY SELECTED ID IS " + currentlySelectedId);
+    // If we're not hovering on anything, but we want to retain the info, we retain it.
+    if (entityBeingSelected === null && retainEventInfo) {
+        return;
+    }
+    // If we're not hovering on anything, but we aren't retaining the info, hide the info.
+    if (currentlySelectedId === null) {
         hideFromSelectedTable(currentlySelectedId);
-        currentlySelectedId = null;
-    } else if (entityBeingSelected.id !== currentlySelectedId) {
-        currentlySelectedId = entityBeingSelected.id;
+        return;
+    }
+    // If we don't have something else showing in the event pane, show this as we're hovering on it.
+    if (retainEventInfo === false) {
         showInSelectedTable(currentlySelectedId);
     }
 }, ScreenSpaceEventType.MOUSE_MOVE);
+
+hoverEventHandler.setInputAction(function (movement) {
+    // For some reason we're not getting a SelectedEntity from movement.position which is all I have when this
+    // Event handler fires, so we'll need to check if there is a currentlySelectedId when we click.  If there is,
+    // we interpret that as we should retain the info in the info box.  If there isn't, we should clear it.
+    retainEventInfo = currentlySelectedId != null;
+    if (retainEventInfo === false && currentlySelectedId === null) {
+        hideFromSelectedTable(currentlySelectedId);
+    }
+}, ScreenSpaceEventType.LEFT_CLICK);
 
 function getSelectedEntity(position) {
     let pickedObject = viewer.scene.pick(position);

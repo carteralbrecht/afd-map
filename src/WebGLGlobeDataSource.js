@@ -185,8 +185,6 @@ class WebGLGlobeDataSource {
                 let color;
                 if (height < 400) {
                     color = Cesium.Color.AQUA.withAlpha(this.default_alpha)
-                } else if (height < 500) {
-                    color = Cesium.Color.BLUE.withAlpha(this.default_alpha)
                 } else if (height < 600) {
                     color = Cesium.Color.CHARTREUSE.withAlpha(this.default_alpha)
                 } else if (height < 700) {

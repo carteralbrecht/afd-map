@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,44 +11,44 @@
       crossorigin="anonymous">
 
 
-        <div class="container">
+<div class="container-fluid">
+    <div class="row">
+        <header class="head_sec">
+            <h3>Amazon Fraud Detector CesiumJS Map Hackathon 2022 Demo</h3>
+        </header>
+    </div>
+    <div class="row">
+        <div id="currentlySelectedContainer" class="col-lg-3">
+        </div>
+        <div class="col-lg-9">
             <div class="row">
-                <header class="head_sec">
-                    <h1>Amazon Fraud Detector Map</h1>
-                </header>
+                <div id="cesiumContainer" style="height: 575px"></div>
             </div>
             <div class="row">
-                <div id="currentlySelectedContainer" class="col-lg-3">
-                </div>
-                <div class="col-lg-9">
+                <div id="timeSliderContainer" class="w-100 p-3">
                     <div class="row">
-                        <div id="cesiumContainer" style="height: 600px"></div>
-                    </div>
-                    <div class="row">
-                        <div id="timeSliderContainer" class="w-100 p-3">
-                            <div class="row">
-                                <div class="col-9">
-                                    <input id="timeSlider"class="form-range" type="range"
-                                           min="1619827200" max="1630193400" step="1800" value="1619827200"/>
-                                </div>
-                                <div class="col-1" id="timeColumn"></div>
-                                <div class="col-1">
-                                    <button type="button" class="btn btn-primary" id="playButton">Play</button>
-                                </div>
-                                <div class="col-1">
-                                    <button type="button" class="btn btn-primary" id="pauseButton">Pause</button>
-                                </div>
-                            </div>
+                        <div class="col-9">
+                            <input id="timeSlider"class="form-range" type="range"
+                                   min="1620648000" max="1626782400" step="1800" value="1620648000"/>
+                        </div>
+                        <div class="col-1" id="timeColumn"></div>
+                        <div class="col-1">
+                            <button type="button" class="btn btn-primary" id="playButton">Play</button>
+                        </div>
+                        <div class="col-1">
+                            <button type="button" class="btn btn-primary" id="pauseButton">Pause</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div id="infoTableContainer" style="width: fit-content">
-                    <table class="table table-sm table-bordered" id="eventInfoTable">
-                    </table>
-                </div>
-            </div>
         </div>
+    </div>
+    <div class="row justify-content-md-center">
+        <div id="infoTableContainer" style="width: fit-content">
+            <table class="table table-sm table-bordered" id="eventInfoTable">
+            </table>
+        </div>
+    </div>
+</div>
 </body>
 </html>
