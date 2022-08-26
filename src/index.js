@@ -114,11 +114,11 @@ function updateEventData() {
             let displayedEvent = displayedEvents[i];
             // We'll set this row to highlight yellow or red depending on the model score
             if(parseInt(displayedEvent["MODEL_SCORE"]) > 750) {
-                innerHTML+= `<tr class="table-danger" id="${displayedEvent["ENTITY_ID"]}>`;
+                innerHTML+= `<tr class="table-danger" id="${displayedEvent["EVENT_ID"]}"/>`;
             } else if(parseInt(displayedEvent["MODEL_SCORE"]) > 650) {
-                innerHTML+= `<tr class="table-warning" id="${displayedEvent["ENTITY_ID"]}>`;
+                innerHTML+= `<tr class="table-warning" id="${displayedEvent["EVENT_ID"]}"/>`;
             } else {
-                innerHTML+= `<tr id="${displayedEvent["ENTITY_ID"]}>`;
+                innerHTML+= `<tr id="${displayedEvent["EVENT_ID"]}"/>`;
             }
 
             for (let j = 0; j < displayedColumns.length; j++) {
