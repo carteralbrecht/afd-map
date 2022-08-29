@@ -4,7 +4,7 @@
 This application was developed for the 2022 AWS AI/ML Hackathon. It serves as a proof-of-concept for an interactive tool that allows
 Amazon Fraud Detector customers to visualize and analyze fraud predictions in a geographic and chronological context.
 
-![Application Screenshot](/Users/caalbt/Development/afd-map/appScreenshot.png)
+![Application Screenshot](appScreenshot.png)
 
 
 ## Quick Start Guide
